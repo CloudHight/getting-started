@@ -1,44 +1,69 @@
-# Docker Getting Started Tutorial
+# Getting Started — Simple Node CRUD App
 
-This tutorial was written with the intent of helping folks get up and running
-with containers and is designed to work with Docker Desktop. While not going too much 
-into depth, it covers the following topics:
+A minimal Node.js + Express sample application with a small static frontend.  
+Provides REST routes for create/read/update/delete and two persistence backends (SQLite for local/dev and MySQL for production).
 
-- Running your first container
-- Building containers
-- Learning what containers are
-- Running and removing containers
-- Using volumes to persist data
-- Using bind mounts to support development
-- Using container networking to support multi-container applications
-- Using Docker Compose to simplify the definition and sharing of applications
-- Using image layer caching to speed up builds and reduce push/pull size
-- Using multi-stage builds to separate build-time and runtime dependencies
+## Features
+- REST endpoints: addItem, getItems, updateItem, deleteItem
+- Persistence adapters: SQLite (default) and MySQL
+- Small static frontend located in `src/static`
+- Unit tests under `app/spec`
 
-## Getting Started
+## Prerequisites
+- Node.js 14+ (recommended)
+- npm
+- For MySQL usage: a running MySQL server and credentials
 
-If you wish to run the tutorial, you can use the following command after installing Docker Desktop:
+## Quickstart (local / SQLite)
+1. Open a terminal (Mac):
+   cd /path/to/getting-started/app
+2. Install:
+   npm install
+3. Start the app:
+   npm start
+4. Visit:
+   http://localhost:3000 (or the port printed by the server)
 
-```bash
-docker run -d -p 80:80 docker/getting-started
-```
+## Use MySQL instead of SQLite
+Set environment variables before starting the server:
+- MYSQL_HOST
+- MYSQL_PORT (optional, default 3306)
+- MYSQL_USER
+- MYSQL_PASSWORD
+- MYSQL_DATABASE
+- USE_MYSQL=true
 
-Once it has started, you can open your browser to [http://localhost](http://localhost).
+Example (macOS / Linux):
+export MYSQL_HOST=127.0.0.1
+export MYSQL_USER=myuser
+export MYSQL_PASSWORD=mypass
+export MYSQL_DATABASE=mydb
+export USE_MYSQL=true
+npm start
 
-## Development
+The app will use the MySQL adapter in `src/persistence/mysql.js` when `USE_MYSQL` is truthy.
 
-This project has a `docker-compose.yml` file, which will start the mkdocs application on your
-local machine and help you see changes instantly.
+## Tests
+Run unit tests (uses SQLite by default):
+cd app
+npm test
 
-```bash
-docker compose up
-```
+Tests live in `app/spec`:
+- `spec/routes/*` — route tests
+- `spec/persistence/*` — persistence adapter tests
 
-## Contributing
+## Project layout (important files)
+- app/src/index.js — server entrypoint
+- app/src/routes/* — route handlers
+- app/src/persistence/sqlite.js — SQLite adapter
+- app/src/persistence/mysql.js — MySQL adapter
+- app/src/static — frontend assets
+- app/spec — tests
 
-If you find typos or other issues with the tutorial, feel free to create a PR and suggest fixes!
+## Notes
+- The SQLite DB is file-based and suitable for development only.
+- When adding a production DB, ensure correct network/security settings for MySQL.
+- Adjust the port and other settings in `app/src/index.js` if needed.
 
-If you have ideas on how to make the tutorial better or want to suggest adding new content, please open an 
-issue first before working on your idea. While we love input, we want to keep the tutorial scoped to new-comers.
-As such, we may reject ideas for more advanced requests and don't want you to lose any work you might
-have done. So, ask first and we'll gladly hear your thoughts!
+## License
+This project is provided under the repository LICENSE file.
